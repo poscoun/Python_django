@@ -1,0 +1,49 @@
++ Django
+ : 파이썬으로 만들어진 무료 오픈소스 웹 어플리케이션 프레임워크
+ : 쉽고 빠르게 웹 어플리케이션을 개발할 수 있도록 돕는 웹 프레임워크
+    (Full Stack Framework)
+
+cf) Flask : micro framework
+
+> 장고 프로젝트
+ - django-admin startproject <프로젝트 이름>
+ - 프로젝트에는 여러 개의 app을 만들 수 있음
+
+> MTV (Model Template View) 개발 방식
+ - M (Model : models.py) : DBMS 내용
+    : 장고에서 하나의 모델은 하나의 클래스로 나타낸다.
+      클래스 내부에서 데이터의 이름과 데이터 형태를 정의
+
+   [자료형]
+    1) CharField : 문자열 정의
+                 : 옵션 (max_length : 문자열 최대 길이)  |   max_length를 적지 않으면 None처리 (무제한)
+
+    2) DataField : 날짜 양식에 맞게 저장되는 데이터 타입
+                 : default - python datatime 라이브러리 기준
+
+    3) EmailField : 이메일 형식을 가지는 데이터 타입
+                  : EmailValidator 를 통해 입력되는 문자열이 이메일 형식인지를 자동으로 체크
+
+    4) FileField : 파일을 저장할 수 있는 데이터 타입
+                 : 실질적으로 저장되는 것은 파일의 이름
+
+    5) TextField : CharField 와 거의 같음. 글자 수 제한이 더 크다
+
+    6) IntegerField : 숫자를 저장하는 데이터 타입
+    7) BooleanField : 참 거짓을 저장하는 데이터 타입입
+
+
+   [sqllite]
+    : PRAGMA
+      컬럼순서  |   이   |   자료형   |   notnull여부 (1/0) |   pk여부 (1/0)  # 1이 True, 0이 false
+
+ - T (Template - HTML) : 사용자에게 보여줄 화면 관련 (templates directory)
+ - V (View : views.py) : Logic 관련
+
+> 주요 파일
+ - settings.py : 설정 관련
+ - urls.py : URLConf (URL과 view를 mapping)
+
+ - models.py : DBMS 관련 (default: ORM방식)
+ - views.py : 화면 처리 로직, business 로직
+ - admin.py : app admin 처리

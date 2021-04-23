@@ -1,0 +1,90 @@
+﻿https://docs.djangoproject.com/ko/3.2/intro/
+
+터미널 , sublimetext3
+
+cmd 관리자 권한으로 실행 (콘다 아님)
+C:\WINDOWS\system32>cd \
+C:\>cd python_workspace
+C:\python_workspace>pip install django
+C:\python_workspace>python
+>>>import django
+>>> django.VERSION
+(3, 2, 0, 'final', 0)
+>>> exit()
+C:\python_workspace>django-admin startproject ToDoList
+C:\python_workspace>dir
+C:\python_workspace>cd toDoList
+
+C:\python_workspace\ToDoList>python manage.py startapp my_to_do_app
+
+파이참 키고 ToDoList 열어서
+settings.py 에서
+INSTALLED_APPS = [
+    'my_to_do_app',             <== 추가
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'Asia/Seoul'    <== 변경
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = False                <== 변경
+
+C:\python_workspace\ToDoList>python manage.py runserver
+
+Starting development server at http://127.0.0.1:8000/ 복붙해서 크롬에 장고 웹서버 돌아가는지 확인
+
+Ctrl + c  서버 끄기
+
+C:\python_workspace\ToDoList>python manage.py makemigrations
+Migrations for 'my_to_do_app':
+  my_to_do_app\migrations\0001_initial.py
+    - Create model Todo
+
+C:\python_workspace\ToDoList>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, my_to_do_app, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying my_to_do_app.0001_initial... OK
+  Applying sessions.0001_initial... OK
+
+C:\python_workspace\ToDoList>python manage.py dbshell
+SQLite version 3.35.4 2021-04-02 15:20:15
+Enter ".help" for usage hints.
+sqlite> .tables
+auth_group                  django_admin_log
+auth_group_permissions      django_content_type
+auth_permission             django_migrations
+auth_user                   django_session
+auth_user_groups            my_to_do_app_todo
+auth_user_user_permissions
+sqlite> PRAGMA table_info(my_to_do_app_todo);
+0|id|integer|1||1
+1|contents|varchar(255)|1||0
+sqlite> select * from my_to_do_app_todo;
