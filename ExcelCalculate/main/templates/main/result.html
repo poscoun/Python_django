@@ -39,7 +39,19 @@
         </div>
         <div class='body'>
             <div class="resultDiv">
-                <h3> * Excel 결과 확인 *</h3>
+                <h2> * Excel 결과 확인 *</h2>
+                <h3>등급별 최소값, 최대값, 평균값 조회</h3>
+                {% for key, value in grade_calculate_dic.items %}
+                    <h4>등급 : {{ key }}</h4>
+                    <h5>최소값 : {{ value.min }}</h5>
+                    <h5>최대값 : {{ value.max }}</h5>
+                    <h5>평균값 : {{ value.avg }}</h5>
+                {% endfor %}
+                <hr/>
+                <h3>이메일 도메인 별 인원수 조회</h3>
+                {% for key, value in email_domain_dic.items %}
+                    <h4>{{ key }} : {{ value }}</h4>
+                {% endfor %}
             </div>
             <hr>
         </div>

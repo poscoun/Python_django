@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import *
 from random import *
 from sendEmail.views import *
+import hashlib
 
 # main views.py
 
@@ -10,7 +11,7 @@ def index(request):
     if 'user_name' in request.session.keys():
         return render(request, 'main/index.html')
     else:
-        return redirect('main/signin')
+        return redirect('main_signin')
 
 def signup(request):
     return render(request, 'main/signup.html')
@@ -25,14 +26,29 @@ def verify(request):
     return redirect('main_index')
 
 def result(request):
-    return render(request, 'main/result.html')
+    if 'user_name' in request.session.keys():
+        content = {}
+        content['grade_calculate_dic'] = request.session['grade_calculate_dic']
+        content['email_domain_dic'] = request.session['email_domain_dic']
+        del request.session['grade_calculate_dic']
+        del request.session['email_domain_dic']
+        return render(request, 'main/result.html', content)
+    else:
+        return redirect('main_signin')
 
 def join(request):
     # print("request: ", request)
     name = request.POST['signupName']
     email = request.POST['signupEmail']
     pw = request.POST['signupPW']
-    user = User(user_name=name, user_email=email, user_password=pw)
+
+    # pw 암호화 (SHA256)
+    encode_pw = pw.encode()
+    encrypted_pw = hashlib.sha256(encode_pw).hexdigest()
+    # print('encrypted_pw', encrypted_pw)
+
+    # 회원등록
+    user = User(user_name=name, user_email=email, user_password=encrypted_pw)
     user.save()
 
     # 인증 코드 생성 - 4자리 정수로 생성 - 랜덤
@@ -44,17 +60,18 @@ def join(request):
 
     # 인증 코드 - 이메일로 전송
     send_result = send(email, code)
-    print(send_result)
     if send_result:
         return response
     else:
         return HttpResponse('이메일 발송에 실패했습니다')
+
+    # return redirect('main_verifyCode')
     # return response
 
 def verify(request):
     user_code = request.POST['verifyCode']
     cookie_code = request.COOKIES.get('code')
-    print(user_code, cookie_code)
+    # print(user_code, cookie_code)
 
     if user_code == cookie_code:
         user = User.objects.get(id=request.COOKIES.get('user_id'))
@@ -67,10 +84,8 @@ def verify(request):
         request.session['user_email'] = user.user_email
         request.session['user_name'] = user.user_name
 
-        request.session
-
         return response
-    else :
+    else:
         redirect('main_verifyCode')
 
 def logout(request):
@@ -81,16 +96,19 @@ def logout(request):
 def login(request):
     loginEmail = request.POST['loginEmail']
     loginPw = request.POST['loginPW']
-    
-    # 회원등록여부 체크
+
+    # 회원등록 여부 체크
     try:
         user = User.objects.get(user_email=loginEmail)
     except Exception as e:
-        print('e : ', e)
+        print('e: ', e)
         return redirect('main_loginFail')
 
-    # 비밀번호 일치 여부
-    if user.user_password == loginPw:
+    encode_pw = loginPw.encode()
+    encrypted_pw = hashlib.sha256(encode_pw).hexdigest()
+
+    # 비밀번호 일치 여부 (암호화 된 비밀번호)
+    if user.user_password == encrypted_pw:
         request.session['user_name'] = user.user_name
         request.session['user_email'] = user.user_email
         return redirect('main_index')
